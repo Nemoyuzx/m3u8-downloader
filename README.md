@@ -1,173 +1,212 @@
-# 欢迎加入社区交流群
-*群已满员，请添加 mjw707577045 加群*
+# M3U8 视频下载器 🎬
 
-![界面](./imgs/tools.jpeg) ![界面](./imgs/m3u8.jpeg)
+一个现代化的M3U8视频流下载工具，支持多种架构和使用方式。
 
+![工具界面](./imgs/tools.jpeg) ![M3U8示例](./imgs/m3u8.jpeg)
 
+## ✨ 特性
 
-# m3u8 视频在线提取工具([English version](https://github.com/Momo707577045/m3u8-downloader/blob/master/README-EN.md))
+- 🌐 **多架构支持**: Django + Vue.js 现代化Web应用，Node.js独立后端
+- 🎯 **智能下载**: 自动解析M3U8播放列表，并发下载TS片段
+- 📊 **实时监控**: WebSocket实时显示下载进度和状态
+- 🔄 **断点续传**: 支持暂停、继续和重试失败的下载任务
+- 📱 **响应式设计**: 现代化UI，支持桌面和移动设备
+- 🛠 **多种工具**: Web应用、浏览器用户脚本、在线工具
 
-![界面](./imgs/01.jpeg)
-### [工具在线地址](http://blog.luckly-mjw.cn/tool-show/m3u8-downloader/index.html)，推荐使用 chrome 浏览器。
+## 🚀 快速开始
 
-### 研发背景
-- m3u8视频格式简介
-    - m3u8视频格式原理：将完整的视频拆分成多个 .ts 视频碎片，.m3u8 文件详细记录每个视频片段的地址。
-    - 视频播放时，会先读取 .m3u8 文件，再逐个下载播放 .ts 视频片段。
-    - 常用于直播业务，也常用该方法规避视频窃取的风险。加大视频窃取难度。
-- 鉴于 m3u8 以上特点，无法简单通过视频链接下载，需使用特定下载软件。
-    - 但软件下载过程繁琐，试错成本高。
-    - 使用软件的下载情况不稳定，常出现浏览器正常播放，但软件下载速度慢，甚至无法正常下载的情况。
-    - 软件被编译打包，无法了解内部运行机制，不清楚里面到底发生了什么。
-- 基于以上原因，开发了本工具。
+### 方式一：现代化Web应用（推荐）
 
-    ![](./imgs/09.jpeg)
+使用Django后端 + Vue.js前端的完整Web应用：
 
-### 工具特点
-- 无需安装，打开网页即可用。
-- 强制下载现有片段，无需等待完整视频下载完成。
-- 操作直观，精确到视频碎片的操作。
+```bash
+# 1. 安装依赖
+# Django后端
+cd backend_django
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
 
+# Vue.js前端
+cd ../frontend
+npm install
 
-### 功能说明
-![](./imgs/02.jpeg)
-【解析下载】输入 m3u8 链接，点击下载视频。
-【跨域复制代码】当资源出现跨域限制时，点击复制页面代码，在视频页面的控制台输入。将工具注入到视频页面中，解决跨域问题。
-【重新下载错误片段】当部分视频片段下载失败时，点击该按钮，重新下载错误片段。
-【强制下载现有片段】将已经下载好的视频片段强制整合下载。可以提前观看已经下载的片段。该操作不影响当前下载进程。
-【片段Icon】对应每一个 .ts 视频片段的下载情况。「灰色」：待下载，「绿色」：下载成功，「红色」：下载失败。点击红色 Icon 可重新下载对应错误片段。
+# 2. 启动服务
+# 启动Django后端（端口8000）
+cd ../backend_django
+source venv/bin/activate
+python manage.py migrate
+python manage.py runserver 0.0.0.0:8000
 
-### 使用说明
-- 打开视频目标网页，鼠标右键「检查」，或者「开发者工具」，或者按下键盘的「F12」键
-- 找到 network，输入 m3u8，过滤 m3u8 文件。
-- 刷新页面，监听 m3u8 文件。
-
-    ![](./imgs/03.jpeg)
-- 找到目标m3u8文件，查看文件内容，是否符合格式。
-    - 如下为索引文件，不是真正的视频 m3u8 文件
-
-        ![](./imgs/04.jpeg)
-    - 一般内容有许多 ts 字眼的文件才是我们需要的视频 m3u8 文件。
-
-         ![](./imgs/05.jpeg)
-- 拷贝这个 m3u8 文件的链接。
-
-    ![](./imgs/06.jpeg)
-- 打开工具页面，输入链接，点击「解析下载」。
-- 出现片段 Icon，则证明操作成功，耐心等待视频下载。
-- 片段全部下载成功，将触发浏览器自动下载，下载整合后的完整视频。
-- 如果有片段下载失败，则点击对应片段，或点击「重新下载错误片段」按钮。重新下载错误片段。
-
-    ![](./imgs/08.jpeg)
-
-### 异常情况
-【无法下载，没有显示片段Icon】
-  - 一般由于跨域造成。
-  - 点击「跨域复制代码」按钮。
-  - 打开视频目标网页的「开发者工具界面」，找到 console 栏。
-
-    ![](./imgs/10.jpeg)
-  - 粘贴刚刚复制的内容，回车。
-  - 滚动页面到底部，发现工具显示在底部。然后在注入的工具中正常使用。
-
-    ![](./imgs/11.jpeg)
-
-【下载后的视频资源不可看】
-  - 网站对视频源进行了加密操作。不同的视频网站有不同的算法操作。无法通用处理。
-  - 一般网站不会有这种情况。爱奇艺，腾讯等大视频网站才会有该安全措施。
-
-    ![](./imgs/12.jpeg)
-
-### 实现思路
-【下载并解析 m3u8 文件】
-- 直接通过 ajax 的 get 请求 m3u8 文件。得到 m3u8 文件的内容字符串。读取字符串进行解析。
-- 需要注意的是，m3u8 文件不是 json 格式，不能将 dataType 设置为 json。
-【队列下载 ts 视频片段】
-- 同样使用 ajax 的 get 请求视频碎片，一个 ajax 请求一个 ts 视频碎片，但关键点在于，下载的是视频文件，属于二进制数据，需要将 responseType 请求头设置为 arraybuffer。```xhr.responseType = 'arraybuffer'```
-- 使用队列下载，是因为视频碎片太多，不可能一次性请求全部。需要分批下载。
-- 同时由于浏览器同源并发限制，视频同时请求数不能过多。本工具设置为并发下载数为 10。
-【组合 ts 视频片段】
-- 看似很难，但其实使用 [Blob](https://developer.mozilla.org/zh-CN/docs/Web/API/Blob) 对象即可将多个 ts 文件整合成一个文件。new Blob()，传入 ts 文件数组。
-- 这里有个小细节需要注意，需要在 new Blob 的第二个参数中设置文件的 MIME 类型，否则将默认为 txt 文件。 ```const fileBlob = new Blob(fileDataList, { type: 'video/MP2T' }) ```
-【自动下载】
-- 下载，当然先要获得文件链接，即刚生成的 Blob 文件链接。
-- 使用 [URL.createObjectURL](https://developer.mozilla.org/zh-CN/docs/Web/API/URL/createObjectURL)，即可得到浏览器内存中，Blob 的文件链接。```URL.createObjectURL(fileBlob)```
-- 最后，使用 a 标签的 [a.download](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/a) 属性，将 a 标签设置为下载功能。主动调用 click 事件```a.click()```。完成文件自动下载。
-
-    ![](./imgs/13.jpeg)
-
-
-### 核心代码
-【整合及自动下载】
-
-```
-    // 下载整合后的TS文件
-    downloadFile(fileDataList, fileName, fileType) {
-      this.tips = 'ts 碎片整合中，请留意浏览器下载'
-      const fileBlob = new Blob(fileDataList, { type: 'video/MP2T' }) // 创建一个Blob对象，并设置文件的 MIME 类型
-      const a = document.createElement('a')
-      a.download = fileName + '.' + fileType
-      a.href = URL.createObjectURL(fileBlob)
-      a.style.display = 'none'
-      document.body.appendChild(a)
-      a.click()
-      a.remove()
-    },
+# 启动前端开发服务器（端口8080）
+cd ../frontend
+npm run dev
 ```
 
-是的，涉及新知识点的部分只有上面一小段，其他的都是 JS 的基础应用。
+访问 `http://localhost:8080` 使用Web应用。
 
-除了 vue.js 文件，本工具代码均包含在 index.html 文件里面。包括换行，一共 540 行代码，其中 css 样式 190 行，html 标签 30 行。JS 逻辑代码 300 行。
+### 方式二：Node.js独立后端
 
-罗列这些代码量只是想表明，本工具运用到的都只是 JS 的常见知识，并不复杂。鼓励大家多尝试阅读源码，其实看源码并没有想象中的那么困难。
+```bash
+# 启动Node.js后端
+cd backend-node
+npm install
+npm start  # 端口3000
+```
 
-### [源码链接](https://github.com/Momo707577045/m3u8-downloader/blob/master/index.html)
+### 方式三：在线工具（传统方式）
 
-### AES 常规解密功能
-- 借助「aes-decryptor.js」，该文件来至 [hls.js](https://github.com/video-dev/hls.js)
+```bash
+# 使用传统的在线工具
+cd legacy/web-tool
+# 在Web服务器中托管这些文件，或直接打开index.html
+```
 
-### MP4 转码功能
-- 借助「mux-mp4.js」，源码来至 [mux.js](https://github.com/videojs/mux.js#mp4)
-- 但 mux.js 存在一个无法计算视频长度的 bug
-- 本人已 fork 该项目，并修复该 bug，修复后的项目[链接在这里](https://github.com/Momo707577045/mux.js)
+## 📋 功能说明
 
-### 第三方接入
-- 在 url 中通过 source 参数拼接下载地址即可，如：```http://blog.luckly-mjw.cn/tool-show/m3u8-downloader/index.html?source=https://upyun.luckly-mjw.cn/Assets/media-source/example/media/index.m3u8```
-- 系统将自动解析该参数
+### Web应用界面
+![界面截图](./imgs/01.jpeg)
 
-    ![](./imgs/16.jpeg)
+### 主要功能
 
+1. **添加下载任务**
+   - 输入M3U8播放列表URL
+   - 自定义文件名和保存目录
+   - 调整并发下载数量
 
-### [油猴插件](https://blog.luckly-mjw.cn/tool-show/m3u8-downloader/m3u8-downloader.user.js)
+2. **任务管理**
+   - 实时查看下载进度
+   - 暂停/继续/重试任务
+   - 清理已完成的任务
 
-![](./imgs/15.jpeg)
+3. **统计监控**
+   - 全局下载统计
+   - 实时下载速度
+   - 任务状态汇总
 
-- 「跳转下载」即新开页面，打开本工具页面，自动携带并解析目标地址
-- 「注入下载」为解决跨域而生，直接将代码注入到当前视频网站，进行视频下载
-- 插件源码: https://github.com/Momo707577045/m3u8-downloader/blob/master/m3u8-downloader.user.js
-- 手动添加油猴插件步骤
-  - 点击 tamper-monkey「油猴」icon，点击「添加新脚本」
+## 🔧 使用指南
 
-    ![](./imgs/21.jpeg)
+### 获取M3U8链接
 
-  - 在当前位置，粘贴上述链接中的源码
+1. 打开视频网页，按F12打开开发者工具
+2. 切换到Network标签，筛选包含"m3u8"的请求
+3. 刷新页面，找到真正的视频M3U8文件（通常包含多个.ts链接）
 
-    ![](./imgs/17.jpeg)
+![获取M3U8链接](./imgs/03.jpeg)
 
-    ![](./imgs/18.jpeg)
+### 识别正确的M3U8文件
 
-  - 点击「文本」，「保存」
+- ❌ 索引文件（包含多个分辨率选项）
+  ![索引文件](./imgs/04.jpeg)
 
-    ![](./imgs/19.jpeg)
+- ✅ 视频文件（包含.ts片段列表）
+  ![视频文件](./imgs/05.jpeg)
 
-  - 得到如下结果，即为添加成功
+## 🏗 项目架构
 
-    ![](./imgs/20.jpeg)
+```
+m3u8-downloader/
+├── frontend/              # Vue.js前端应用
+├── backend_django/        # Django后端（主要）
+├── backend-node/          # Node.js后端（独立）
+├── downloader/           # Django下载模块
+├── files/                # Django文件管理
+├── tasks/                # Django任务管理
+├── legacy/               # 旧版本工具
+│   ├── web-tool/         # 在线HTML工具
+│   └── unused-images/    # 未使用的图片
+└── imgs/                 # 文档图片
+```
 
+### 技术栈
 
+**前端:**
+- Vue 3 + Composition API
+- Element Plus UI组件库
+- Vite构建工具
+- Socket.IO客户端
 
-### 完结撒花，感谢阅读。
-![](./imgs/14.jpeg)
+**后端 (Django):**
+- Django 5.2 + Django REST Framework
+- Celery异步任务队列
+- Channels WebSocket支持
+- SQLite/PostgreSQL数据库
+
+**后端 (Node.js):**
+- Express.js框架
+- Socket.IO实时通信
+- 文件流处理
+
+## 🔗 API接口
+
+### Django后端 (端口8000)
+- `GET /api/` - API根路径
+- `GET /api/tasks/` - 获取下载任务列表
+- `POST /api/tasks/` - 创建下载任务
+- `PATCH /api/tasks/{id}/` - 更新任务状态
+
+### Node.js后端 (端口3000)
+- `POST /api/download` - 开始下载
+- `GET /api/tasks` - 获取任务状态
+- WebSocket连接用于实时通信
+
+## ⚙️ 配置说明
+
+### 环境变量
+
+```bash
+# Django配置
+DEBUG=True
+SECRET_KEY=your-secret-key
+DATABASE_URL=sqlite:///db.sqlite3
+
+# Node.js配置
+PORT=3000
+DOWNLOAD_DIR=./downloads
+MAX_CONCURRENT=5
+```
+
+### 自定义配置
+
+- 下载目录: 默认为`downloads/`
+- 并发数量: 1-10个并发连接
+- 超时设置: 可在配置文件中调整
+
+## 🤝 贡献指南
+
+1. Fork项目
+2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 开启Pull Request
+
+## 📝 更新日志
+
+### v2.0.0 (2025-06-02)
+- ✨ 新增Vue.js现代化前端界面
+- ✨ 添加Django REST API后端
+- ✨ 实时WebSocket进度监控
+- ✨ 支持断点续传和任务管理
+- 🔧 重构项目架构，分离前后端
+- 📚 完善文档和使用指南
+
+### v1.0.0
+- 🎉 初始版本，基础在线工具
+- 📥 M3U8视频下载功能
+- 🌐 浏览器内运行，无需安装
+
+## 📄 许可证
+
+MIT License - 详见 [LICENSE](LICENSE) 文件
+
+## 🙏 致谢
+
+- 感谢所有贡献者的支持
+- 基于原版[m3u8-downloader](https://github.com/Momo707577045/m3u8-downloader)项目改进
+
+---
+
+如有问题或建议，欢迎提交Issue或Pull Request！
 
 
 
